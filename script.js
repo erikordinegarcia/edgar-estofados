@@ -81,7 +81,6 @@ if (talksCarousel) {
     const maxIndex = totalTalks - visible;
     talkIndex = Math.max(0, Math.min(talkIndex, maxIndex));
 
-    // Usar getBoundingClientRect para pegar largura real após layout
     const firstCard = talksCarousel.querySelector('.talk-slide');
     if (!firstCard) return;
     const cardWidth = firstCard.getBoundingClientRect().width;
@@ -112,7 +111,6 @@ if (talksCarousel) {
     }, 150);
   });
 
-  // Aguardar layout estabilizar
   requestAnimationFrame(() => requestAnimationFrame(updateCarousel));
 }
 
@@ -126,6 +124,41 @@ if (slides.length > 0) {
     slides[currentSlide].classList.add('active');
   }, 3500);
 }
+
+// ===== CONTADORES ANIMADOS =====
+const contadores = document.querySelectorAll('.contador');
+
+const contadorObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+
+    const el = entry.target;
+    const target = parseInt(el.getAttribute('data-target'));
+    const texto = el.textContent;
+    const prefixo = texto.startsWith('+') ? '+' : '';
+    const sufixo = texto.endsWith('%') ? '%' : '';
+    const duracao = 2000;
+    const inicio = performance.now();
+
+    function animar(agora) {
+      const progresso = Math.min((agora - inicio) / duracao, 1);
+      const easing = 1 - Math.pow(1 - progresso, 3);
+      const valor = Math.floor(easing * target);
+      el.textContent = prefixo + valor.toLocaleString('pt-BR') + sufixo;
+
+      if (progresso < 1) {
+        requestAnimationFrame(animar);
+      } else {
+        el.textContent = texto;
+      }
+    }
+
+    requestAnimationFrame(animar);
+    contadorObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+contadores.forEach(el => contadorObserver.observe(el));
 
 // ===== FEEDBACK CAROUSEL =====
 const feedbackCarousel = document.getElementById('feedbackCarousel');
