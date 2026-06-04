@@ -59,7 +59,7 @@ h2 {
 }
 
 .brand-logo {
-  height: 100px;
+  height: 60px;
   width: auto;
   object-fit: contain;
 }
@@ -449,19 +449,28 @@ h2 {
 .carousel-wrap {
   position: relative;
   margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
   gap: 0.8rem;
 }
 
-.cards-carousel {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 2rem) / 3);
-  gap: 1rem;
+/* Wrapper que esconde o overflow */
+.carousel-overflow {
+  flex: 1;
   overflow: hidden;
-  align-items: stretch;
+  min-width: 0;
+}
+
+.cards-carousel {
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+}
+
+.talk-slide {
+  flex: 0 0 calc((100% - 2rem) / 3);
+  min-width: 0;
 }
 
 .carousel-btn {
@@ -762,7 +771,6 @@ details p { color: var(--muted); margin-top: 0.8rem; font-size: 0.96rem; line-he
 }
 
 /* ========= WHATSAPP FLOAT ========= */
-/* WhatsApp floating */
 .wppFloat {
   position: fixed;
   right: 20px;
@@ -840,7 +848,7 @@ details p { color: var(--muted); margin-top: 0.8rem; font-size: 0.96rem; line-he
   .topbar.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
   .grid-two { grid-template-columns: 1fr; }
-  .cards-carousel { grid-auto-columns: calc((100% - 1rem) / 2); }
+  .talk-slide { flex: 0 0 calc((100% - 1rem) / 2); }
   .numeros-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -876,23 +884,11 @@ details p { color: var(--muted); margin-top: 0.8rem; font-size: 0.96rem; line-he
   .form-container { grid-template-columns: 1fr; gap: 2rem; }
   .banner-palestrante { height: 220px; }
 
-  .carousel-wrap { display: block; padding-inline: 2.6rem; position: relative; }
-  .cards-carousel {
-    display: flex; overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 4px 0 10px; gap: 16px;
-  }
-  .cards-carousel::-webkit-scrollbar { display: none; }
-  .talk-slide { flex: 0 0 100%; scroll-snap-align: center; }
-
-  .carousel-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    z-index: 2; background: rgba(255,255,255,0.96);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  }
-  #prevTalk { left: 0; }
-  #nextTalk { right: 0; }
+  .carousel-wrap { gap: 0.5rem; }
+  .carousel-overflow { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .carousel-overflow::-webkit-scrollbar { display: none; }
+  .cards-carousel { padding: 4px 0 10px; gap: 16px; }
+  .talk-slide { flex: 0 0 88%; scroll-snap-align: start; }
 
   .galeria-carousel { height: auto; min-height: 260px; aspect-ratio: 4/3; }
   .footer-wrap { flex-direction: column; gap: 1.5rem; }

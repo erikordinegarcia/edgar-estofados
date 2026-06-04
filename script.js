@@ -4,9 +4,7 @@ const revealEls = document.querySelectorAll('.reveal, .reveal-delay, .title-line
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('active');
     });
   },
   { threshold: 0.12 }
@@ -22,12 +20,8 @@ window.addEventListener('scroll', () => {
   const current = window.scrollY;
   if (current > 80) header.classList.add('scrolled');
   else header.classList.remove('scrolled');
-
-  if (current > lastScroll && current > 300) {
-    header.classList.add('hide');
-  } else {
-    header.classList.remove('hide');
-  }
+  if (current > lastScroll && current > 300) header.classList.add('hide');
+  else header.classList.remove('hide');
   lastScroll = current;
 });
 
@@ -41,9 +35,7 @@ const sectionObserver = new IntersectionObserver(
       if (entry.isIntersecting) {
         navLinks.forEach((link) => {
           link.classList.remove('active');
-          if (link.getAttribute('href') === '#' + entry.target.id) {
-            link.classList.add('active');
-          }
+          if (link.getAttribute('href') === '#' + entry.target.id) link.classList.add('active');
         });
       }
     });
@@ -60,7 +52,6 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', isOpen);
 });
 
-// Close menu on link click
 document.querySelectorAll('.nav-links a').forEach((link) => {
   link.addEventListener('click', () => {
     header.classList.remove('menu-open');
@@ -90,13 +81,17 @@ if (talksCarousel) {
     const maxIndex = totalTalks - visible;
     talkIndex = Math.max(0, Math.min(talkIndex, maxIndex));
 
-    const colWidth = talksCarousel.querySelector('.talk-slide')?.offsetWidth || 0;
+    // Usar getBoundingClientRect para pegar largura real após layout
+    const firstCard = talksCarousel.querySelector('.talk-slide');
+    if (!firstCard) return;
+    const cardWidth = firstCard.getBoundingClientRect().width;
     const gap = 16;
-    talksCarousel.style.transform = `translateX(-${talkIndex * (colWidth + gap)}px)`;
-    talksCarousel.style.transition = 'transform 0.45s cubic-bezier(0.4,0,0.2,1)';
 
-    prevTalk.disabled = talkIndex === 0;
-    nextTalk.disabled = talkIndex >= maxIndex;
+    talksCarousel.style.transition = 'transform 0.45s cubic-bezier(0.4,0,0.2,1)';
+    talksCarousel.style.transform = `translateX(-${talkIndex * (cardWidth + gap)}px)`;
+
+    if (prevTalk) prevTalk.disabled = talkIndex === 0;
+    if (nextTalk) nextTalk.disabled = talkIndex >= maxIndex;
   }
 
   prevTalk?.addEventListener('click', () => {
@@ -107,11 +102,18 @@ if (talksCarousel) {
     talkIndex++;
     updateCarousel();
   });
+
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    talkIndex = 0;
-    updateCarousel();
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      talkIndex = 0;
+      updateCarousel();
+    }, 150);
   });
-  updateCarousel();
+
+  // Aguardar layout estabilizar
+  requestAnimationFrame(() => requestAnimationFrame(updateCarousel));
 }
 
 // ===== GALLERY SLIDESHOW =====
@@ -147,12 +149,12 @@ if (feedbackCarousel) {
     const maxIndex = totalFeedbacks - visible;
     feedbackIndex = Math.max(0, Math.min(feedbackIndex, maxIndex));
 
-    const cardWidth = allFeedbacks[0]?.offsetWidth || 0;
+    const cardWidth = allFeedbacks[0]?.getBoundingClientRect().width || 0;
     const gap = 20;
     feedbackCarousel.style.transform = `translateX(-${feedbackIndex * (cardWidth + gap)}px)`;
 
-    prevFeedback.disabled = feedbackIndex === 0;
-    nextFeedback.disabled = feedbackIndex >= maxIndex;
+    if (prevFeedback) prevFeedback.disabled = feedbackIndex === 0;
+    if (nextFeedback) nextFeedback.disabled = feedbackIndex >= maxIndex;
   }
 
   prevFeedback?.addEventListener('click', () => {
@@ -163,31 +165,15 @@ if (feedbackCarousel) {
     feedbackIndex++;
     updateFeedback();
   });
+
+  let resizeTimer2;
   window.addEventListener('resize', () => {
-    feedbackIndex = 0;
-    updateFeedback();
+    clearTimeout(resizeTimer2);
+    resizeTimer2 = setTimeout(() => {
+      feedbackIndex = 0;
+      updateFeedback();
+    }, 150);
   });
-  updateFeedback();
+
+  requestAnimationFrame(() => requestAnimationFrame(updateFeedback));
 }
-
-// ===== HERO TITLE FADE-IN =====
-window.addEventListener('load', () => {
-  const spans = document.querySelectorAll('.title-desktop span');
-  spans.forEach((span, i) => {
-    setTimeout(
-      () => {
-        span.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-        span.style.opacity = '1';
-        span.style.transform = 'translateY(0)';
-      },
-      200 + i * 200
-    );
-  });
-});
-
-// Set initial state for hero title spans
-document.querySelectorAll('.title-desktop span').forEach((span) => {
-  span.style.opacity = '0';
-  span.style.transform = 'translateY(15px)';
-  span.style.display = 'inline';
-});
