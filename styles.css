@@ -478,19 +478,30 @@ h2 {
   font-weight: 900;
 }
 
+.solucoes-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
 .solucoes-card {
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 1.6rem;
-  padding: 2.5rem 2rem;
-  max-width: 420px;
-  width: 100%;
+  padding: 2.2rem 1.8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1.2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  gap: 1rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.solucoes-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(201,168,76,0.15);
 }
 
 .solucoes-icon-wrap {
@@ -509,7 +520,7 @@ h2 {
 }
 
 .solucoes-card h3 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--text);
   line-height: 1.3;
@@ -519,7 +530,6 @@ h2 {
   font-size: 0.95rem;
   color: var(--muted);
   line-height: 1.65;
-  max-width: 34ch;
 }
 
 .solucoes-destaque {
@@ -539,17 +549,23 @@ h2 {
   border-radius: 0.75rem;
   width: 100%;
   text-align: center;
-  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.4);
-  transition:
-    background 0.2s,
-    transform 0.2s;
-  margin-top: 0.4rem;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+  transition: background 0.2s, transform 0.2s;
+  margin-top: auto;
 }
 
 .solucoes-btn:hover {
   background: var(--primary-strong);
   color: #ffffff;
   transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .solucoes-cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
 }
 
 /* ========= CTA ========= */
