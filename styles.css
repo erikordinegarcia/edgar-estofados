@@ -171,7 +171,7 @@ h2 {
   grid-template-columns: 1fr 1fr;
   background: #ffffff;
   overflow: hidden;
-  margin-top: 73px; /* navbar height */
+  margin-top: 120pxt; /* navbar height */
 }
 
 /* Gold swoosh bottom-right */
